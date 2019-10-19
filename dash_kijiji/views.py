@@ -4,14 +4,18 @@ from django.http import HttpResponse
 # Create your views here.
 
 
-def index(request):
+def test(request):
+    return HttpResponse(f'HTTPRESPONSE to <br><br>{request.user}<br><br>{["<br>" + i for i in request.__dict__]}')
 
-    flow = [
-        "1. Login",
-        "2. Read a new ad",
-        "3. Write a similar ad",
-        "4. See all my ads",
-        "5. Reload ads from scratch",
+
+def flow(request):
+
+    workflow = [
+        "[x] 1. Login",
+        "[x] 2. Read a new ad",
+        "[x] 3. Write a similar ad",
+        "[x] 4. See all my ads",
+        "[x] 5. Reload ads from scratch",
     ]
 
-    return HttpResponse("HTTPRESPONSE")
+    return HttpResponse(f'HTTPRESPONSE<br><br>{"<br>".join(workflow)}')

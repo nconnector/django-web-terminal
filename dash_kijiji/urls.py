@@ -5,5 +5,6 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.index, name='index')
+    path('', views.test, name='index'),
+    path('flow/', views.flow, name='flow')
 ]
