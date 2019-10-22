@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.views.generic.base import View
 from django.views.generic import TemplateView
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 from .models import Client, Case
 
@@ -43,28 +45,11 @@ class Login(View):
         return response
 
 
+@method_decorator(login_required, name='dispatch')
 class Main(View):
-    # def client_list(self):
-    #     """
-    #     List all the clients with their ads
-    #     todo: template this
-    #     todo: move logic to models
-    #     """
-    #     # html = f'<table><tr><td>Account Name</td><td>Ads</td><td>on</td></tr><tr><td colspan="3">{"_"*36}</td></tr>'
-    #     # client_list = Client.objects.all()
-    #     # for i in client_list:
-    #     #     client = str(i)
-    #     #     cases = [f'<tr><td></td><td>{str(x)}</td><td><u>btn</u></td></tr>' for x in Case.objects.filter(user=i)]
-    #     #     html += f'<tr><td>{client}</td></tr><tr>{"".join(cases)}</tr><tr><td colspan="3">{"_"*36}</td></tr>'
-    #     # html += '</table>'
-    #     #
-    #     # response = HttpResponse(f'<pre><h2>Welcome!</h2><h3>Client List</h3>{html}</pre>')
-    #     # return response
-    #     context = {'client_list': Client.objects.all()}
-    #     template = loader.get_template('dash_kijiji/client_list.html')
-    #     response = HttpResponse(template.render(context))
-    #     return response
-
+    """
+    todo: redirect to own profile if not admin
+    """
     def get(self, request, **kwargs):
         context = {'client_list': Client.objects.all()}
         return render(request, "dash_kijiji/client_list.html", context)

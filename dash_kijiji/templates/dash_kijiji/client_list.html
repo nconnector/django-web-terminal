@@ -1,7 +1,8 @@
+<style>a {text-decoration: none; color : #000;}</style>
 <h3>Client List:</h3>
 {% if client_list %}
     {% for client in client_list %}
-    <h4><a href="/profile/{{ client.unm }}/">{{ client.unm }}</a></h4>
+    <b><a href="/profile/{{ client.unm }}/">{{ client.unm }}</a></b>
         <ul>
             {% for case in client.case_set.all %}
             <li>{{ case.sampleurl }} :: button :: button</li>
@@ -11,5 +12,5 @@
         </ul>
     {% endfor %}
 {% else %}
-<h4>No accounts yet.</h4>
+<b>No accounts yet.</b>
 {% endif %}
