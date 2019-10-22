@@ -1,0 +1,16 @@
+<style>a {text-decoration: none; color : #000;}</style>
+<h3>Accounts List:</h3>
+{% if account_list %}
+    {% for account in account_list %}
+    <b><a href="/profile/{{ account.unm }}/">{{ account.unm }}</a></b>
+        <ul>
+            {% for case in account.case_set.all %}
+            <li>{{ case }}</li>
+            {% empty %}
+            <li><i>none</i></li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+{% else %}
+<b>No accounts yet.</b>
+{% endif %}

@@ -5,7 +5,7 @@ from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-from .models import Client, Case
+from .models import Account, Case
 
 
 # Create your views here.
@@ -16,7 +16,7 @@ class Flow(View):
     [✔] 0. MongoDB integration
     [✔] 1. Login cabability
     [✘] 1.1. Login Form
-    [✘] 1.2. Make Cases from Users, not Clients
+    [✘] 1.2. Make Cases from Users, not Accounts
     [✔] 2. Read a new ad
     [✘] 2. Parse the newly read ad ❤
     [✘] 3. Write a similar ad
@@ -51,8 +51,8 @@ class Main(View):
     todo: redirect to own profile if not admin
     """
     def get(self, request, **kwargs):
-        context = {'client_list': Client.objects.all()}
-        return render(request, "dash_kijiji/client_list.html", context)
+        context = {'account_list': Account.objects.all()}
+        return render(request, "dash_kijiji/account_list.html", context)
 
 
 class Profile(View):

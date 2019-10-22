@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 
-class Client(models.Model):
+class Account(models.Model):
     def __str__(self):
         return self.unm
 
@@ -13,9 +13,17 @@ class Client(models.Model):
 
 class Case(models.Model):
     def __str__(self):
-        return self.sampleurl
+        """a __str__ call to instance returns the value below"""
+        return f"{self.platform} : {self.title}"
 
-    user = models.ForeignKey(Client, on_delete=models.CASCADE)  # todo: rename to client to account (check db renaming)
-    sampleurl = models.CharField(max_length=200)  # todo: rename to url
-    # todo: add ad_id, title and so on.....
-    data = models.TextField(default='')
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    description = models.TextField(default='')  # todo: not required
+    platform = models.CharField(
+        max_length=200,
+        choices=[
+            ('kijiji', 'Kijiji.ca'),
+            ('instagram', 'Instagram'),
+                 ],
+        default=None)
+    #config = models.DICTFIELD() for actual app config to use
