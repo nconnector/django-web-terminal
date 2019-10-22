@@ -15,21 +15,24 @@ class Flow(View):
             """FEATURES LAYOUT:\r\n
     [✔] 0. MongoDB integration
     [✔] 1. Login cabability
-    [✘] 1.1. Login Form
-    [✘] 1.2. Make Cases from Users, not Accounts
-    [✔] 2. Read a new ad
-    [✘] 2. Parse the newly read ad ❤
-    [✘] 3. Write a similar ad
-    [✘] 4. See all my ads
-    [✘] 5. Reload ads from scratch
+    [✘] 1.1 Login Form
+    [✘] 1.2 Make the relationship users->accounts->cases
+    [✔] 2. List accounts
+    [✘] 3. Register new accounts (form)
+    [✔] 4. See all my cases
+    [✘] 5. Run case scripts
+    [✘] 5.1 Import scripts and configs 
+    [✘] 5.2 Broadcast output
+    [✘] 6. Run scheduled case scripts
     """,
             "",
             "",
             """VIEWS LAYOUT:\r\n
     [✔] Flow: debug view
     [✘] Login
-    [✘] Main page: list of users for admin or redirect to own Profile
-    [✘] Profile
+    [✔] Main page: list of users for admin or redirect to own Profile
+    [✔] Account
+    [✔] Case channel - live output
     [✔] About
     [✘] Extendable Base Page for {% extends %}
     """,
@@ -56,9 +59,7 @@ class Main(View):
 class ViewAccount(View):
     def get(self, request, account_name, **kwargs):
         """authorized user gets to see profiles"""
-        username = request.user.username if request.user.is_authenticated else None  # todo: move to decorator or logged_in class
-
-        if username:
+        if request.user.is_authenticated:
             response = HttpResponse(f'Account: <b>{account_name}</b>')
         else:
             response = None  # todo: redirect to own profile
@@ -67,9 +68,8 @@ class ViewAccount(View):
 
 class ViewCase(View):
     def get(self, request, case_id, **kwargs):
-        """authorized user gets to see profiles"""
-        username = request.user.username if request.user.is_authenticated else None  # todo: move to decorator or logged_in class
-        if username:
+        """authorized user gets to see cases with their output (channel)"""
+        if request.user.is_authenticated:  # todo: move to decorator or logged_in class
             case = get_object_or_404(Case, id=case_id)
             response = HttpResponse(f'<pre>Case ID: <b>{case_id}</b><br><br>{case}</pre>')
         else:
