@@ -1,7 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic.base import View
 from django.views.generic import TemplateView
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
@@ -45,21 +45,33 @@ class Login(View):
         return response
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name='dispatch')  # todo: enforce admin account for login_required
 class Main(View):
-    """
-    todo: redirect to own profile if not admin
-    """
+    """todo: redirect to own profile if not admin"""
     def get(self, request, **kwargs):
         context = {'account_list': Account.objects.all()}
         return render(request, "dash_kijiji/account_list.html", context)
 
 
-class Profile(View):
-    def get(self, request, username, **kwargs):
-        admin = True
-        if admin:
-            response = HttpResponse(f'Profile page for <b>{username}</b>')
+class ViewAccount(View):
+    def get(self, request, account_name, **kwargs):
+        """authorized user gets to see profiles"""
+        username = request.user.username if request.user.is_authenticated else None  # todo: move to decorator or logged_in class
+
+        if username:
+            response = HttpResponse(f'Account: <b>{account_name}</b>')
+        else:
+            response = None  # todo: redirect to own profile
+        return response
+
+
+class ViewCase(View):
+    def get(self, request, case_id, **kwargs):
+        """authorized user gets to see profiles"""
+        username = request.user.username if request.user.is_authenticated else None  # todo: move to decorator or logged_in class
+        if username:
+            case = get_object_or_404(Case, id=case_id)
+            response = HttpResponse(f'<pre>Case ID: <b>{case_id}</b><br><br>{case}</pre>')
         else:
             response = None  # todo: redirect to own profile
         return response
