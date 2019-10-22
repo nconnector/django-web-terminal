@@ -13,19 +13,9 @@ class Client(models.Model):
 
 class Case(models.Model):
     def __str__(self):
-        return self.data
+        return self.sampleurl
 
-    user = models.ForeignKey(Client, on_delete=models.CASCADE)
-    sampleurl = models.CharField(max_length=200)
+    user = models.ForeignKey(Client, on_delete=models.CASCADE)  # todo: rename to client to account (check db renaming)
+    sampleurl = models.CharField(max_length=200)  # todo: rename to url
+    # todo: add ad_id, title and so on.....
     data = models.TextField(default='')
-
-
-class Question(models.Model):
-    question_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField('date published')
-
-
-class Choice(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    choice_text = models.CharField(max_length=200)
-    votes = models.IntegerField(default=0)

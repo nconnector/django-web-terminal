@@ -44,22 +44,30 @@ class Login(View):
 
 
 class Main(View):
+    # def client_list(self):
+    #     """
+    #     List all the clients with their ads
+    #     todo: template this
+    #     todo: move logic to models
+    #     """
+    #     # html = f'<table><tr><td>Account Name</td><td>Ads</td><td>on</td></tr><tr><td colspan="3">{"_"*36}</td></tr>'
+    #     # client_list = Client.objects.all()
+    #     # for i in client_list:
+    #     #     client = str(i)
+    #     #     cases = [f'<tr><td></td><td>{str(x)}</td><td><u>btn</u></td></tr>' for x in Case.objects.filter(user=i)]
+    #     #     html += f'<tr><td>{client}</td></tr><tr>{"".join(cases)}</tr><tr><td colspan="3">{"_"*36}</td></tr>'
+    #     # html += '</table>'
+    #     #
+    #     # response = HttpResponse(f'<pre><h2>Welcome!</h2><h3>Client List</h3>{html}</pre>')
+    #     # return response
+    #     context = {'client_list': Client.objects.all()}
+    #     template = loader.get_template('dash_kijiji/client_list.html')
+    #     response = HttpResponse(template.render(context))
+    #     return response
+
     def get(self, request, **kwargs):
-        """
-        List all the clients
-        todo: with their ads
-        """
-        client_list = [str(x) for x in Client.objects.all()]
-        case_list = []
-
-        # context = {
-        #     'Clients': client_list,
-        #     'Cases': case_list,
-        # }
-        # return render(request, "clentelle.html", context)
-
-        response = HttpResponse(f'<pre><h2>Welcome!</h2><h3>Client List</h3>{"<br>".join(client_list)}</pre>')
-        return response
+        context = {'client_list': Client.objects.all()}
+        return render(request, "dash_kijiji/client_list.html", context)
 
 
 class Profile(View):

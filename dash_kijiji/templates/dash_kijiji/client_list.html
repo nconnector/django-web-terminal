@@ -1,0 +1,15 @@
+<h3>Client List:</h3>
+{% if client_list %}
+    {% for client in client_list %}
+    <h4><a href="/profile/{{ client.unm }}/">{{ client.unm }}</a></h4>
+        <ul>
+            {% for case in client.case_set.all %}
+            <li>{{ case.sampleurl }} :: button :: button</li>
+            {% empty %}
+            <li><i>none</i></li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+{% else %}
+<h4>No accounts yet.</h4>
+{% endif %}
