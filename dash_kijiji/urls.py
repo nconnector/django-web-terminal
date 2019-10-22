@@ -10,6 +10,4 @@ urlpatterns = [
     path('account/<account_name>/', views.ViewAccount.as_view(), name='account'),
     path('case/<case_id>/', views.ViewCase.as_view(), name='case'),
     path('about/', views.About.as_view(), name='about'),
-
-    path('flow/', views.Flow.as_view(), name='flow'),
 ]

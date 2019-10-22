@@ -8,40 +8,7 @@ from django.utils.decorators import method_decorator
 from .models import Account, Case
 
 
-# Create your views here.
-class Flow(View):
-    def get(self, request, *args, **kwargs):
-        workflow = [
-            """FEATURES LAYOUT:\r\n
-    [✔] 0. MongoDB integration
-    [✔] 1. Login cabability
-    [✘] 1.1 Login Form
-    [✘] 1.2 Make the relationship users->accounts->cases
-    [✔] 2. List accounts
-    [✘] 3. Register new accounts (form)
-    [✔] 4. See all my cases
-    [✘] 5. Run case scripts
-    [✘] 5.1 Import scripts and configs 
-    [✘] 5.2 Broadcast output
-    [✘] 6. Run scheduled case scripts
-    """,
-            "",
-            "",
-            """VIEWS LAYOUT:\r\n
-    [✔] Flow: debug view
-    [✘] Login
-    [✔] Main page: list of users for admin or redirect to own Profile
-    [✔] Account
-    [✔] Case channel - live output
-    [✔] About
-    [✘] Extendable Base Page for {% extends %}
-    """,
-
-        ]
-        response = HttpResponse(f'<pre>HTTPRESPONSE\n\n{"<br>".join(workflow)}</pre>')
-        return response
-
-
+#
 class Login(View):
     def get(self, request, **kwargs):
         response = HttpResponse(f'Login page')
