@@ -19,5 +19,4 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('dash_kijiji.urls')),  # default page
-    path('auto/', include('dash_kijiji.urls'))
 ]

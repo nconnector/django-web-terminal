@@ -1,5 +1,4 @@
 from django.db import models
-
 # Create your models here.
 
 
@@ -26,4 +25,4 @@ class Case(models.Model):
             ('instagram', 'Instagram'),
                  ],
         default=None)
-    #config = models.DICTFIELD() for actual app config to use
+    # config = models.DICTFIELD() for actual app config to use

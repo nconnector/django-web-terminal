@@ -1,6 +1,6 @@
 
 
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 
@@ -10,4 +10,7 @@ urlpatterns = [
     path('account/<account_name>/', views.ViewAccount.as_view(), name='account'),
     path('case/<case_id>/', views.ViewCase.as_view(), name='case'),
     path('about/', views.About.as_view(), name='about'),
+
+    path('chat/', views.HomeView.as_view()),
+
 ]

@@ -2,20 +2,21 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic.base import View
 from django.views.generic import TemplateView
 from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-
 from .models import Account, Case
 
+# chat
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
+from django.views.generic import DetailView, ListView
+from django.http import Http404, HttpResponseForbidden
 
-#
+
 class Login(View):
     def get(self, request, **kwargs):
         response = HttpResponse(f'Login page')
         return response
 
 
-@method_decorator(login_required, name='dispatch')  # todo: enforce admin account for login_required
 class Main(View):
     """todo: redirect to own profile if not admin"""
     def get(self, request, **kwargs):
@@ -46,3 +47,8 @@ class ViewCase(View):
 
 class About(TemplateView):
     template_name = 'dash_kijiji/about.html'
+
+
+class HomeView(TemplateView):
+    template_name = 'dash_kijiji/home.html'
+

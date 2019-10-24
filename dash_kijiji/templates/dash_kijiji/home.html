@@ -1,0 +1,29 @@
+{% load staticfiles %}
+<html>
+  <head>
+    <title>Notifier</title>
+    <script src="{% static 'dash_kijiji/js/websocketbridge.js' %}" type="text/javascript"></script>
+  </head>
+  <body>
+    <h1>Notifier</h1>
+    <p>Notifications</p>
+    <p id="notifylist"></p>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const webSocketBridge = new channels.WebSocketBridge();
+      const nl = document.querySelector("#notifylist");
+
+      webSocketBridge.connect('/notifications/');
+      webSocketBridge.listen(function(event) {
+        console.log("RESPONSE:", event);
+        if (event.event == "New User") {
+          var el = document.createElement("span");
+          el.innerHTML = `<br>New user <b>${event.username}</b>    ${Object.keys(event)}`;
+          nl.appendChild(el);
+        }
+      });
+      document.ws = webSocketBridge; /* for debugging */
+    })
+    </script>
+  </body>
+</html>

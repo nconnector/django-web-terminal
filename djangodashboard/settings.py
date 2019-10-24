@@ -28,19 +28,20 @@ SECRET_KEY = config['DJANGO']['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = [config['NETWORK']['DEV_IP'], config['NETWORK']['PROD_IP'], '127.0.0.1']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'dash_kijiji',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',  # pip install channels
+    'dash_kijiji',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +73,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'djangodashboard.wsgi.application'
+ASGI_APPLICATION = 'djangodashboard.routing.application'
 
 
 # Database
@@ -126,3 +128,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+
+# Channels config
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {"hosts": [(config['NETWORK']['PROD_IP'], 6379)]}  # todo: change to "localhost" for deployment
+    }
+}
