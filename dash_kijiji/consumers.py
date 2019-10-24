@@ -18,4 +18,4 @@ class MessageConsumer(AsyncJsonWebsocketConsumer):
 
     async def case_logging(self, event):  # _ instead of . for sync method in signals.py
         await self.send_json(event)
-        print(f"Got message {event} at {self.channel_name}")
+        print(f"Got message {event}")

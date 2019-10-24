@@ -1,36 +1,45 @@
 {% load staticfiles %}
 <html>
   <head>
-    <title>Notifier</title>
+    <title>Case Page</title>
     <script src="{% static 'dash_kijiji/js/websocketbridge.js' %}" type="text/javascript"></script>
   </head>
   <style>
 p.scrollable {
   background-color: lightblue;
+  width: 65%;
   height: 80%;
   overflow: auto;
 }
   </style>
   <body>
-    <h1>Notifier</h1>
+    <h1>Case Page</h1>
+    {% if case_id %}
     <p>Notifications</p>
-    <p class="scrollable" id="notifylist"></p>
-    <script>
+    <p class="scrollable" id="notifylist">
+      {% for log_entry in case_log_history %}
+        <span><br>    >>> {{ log_entry }}</span>
+      {% empty %}
+        <span><br>    >>> START</span>
+      {% endfor %}
+    </p>
+    <script>   // todo: move js elsewhere
     document.addEventListener('DOMContentLoaded', function() {
       const webSocketBridge = new channels.WebSocketBridge();
       const nl = document.querySelector("#notifylist");
-
-      webSocketBridge.connect('/notifications/');
+      webSocketBridge.connect('/notifications/');  // todo: stop receiving every Case's notes
       webSocketBridge.listen(function(event) {
         console.log("RESPONSE:", event);
-        if (typeof event != "undefined") {
+        if (event.case_id == "{{ case_id }}") {
           var el = document.createElement("span");
-          el.innerHTML = `<br>>>> ${event.last_log}`;
+          el.innerHTML = `<br>    >>> ${event.case_last_log}`;
           nl.appendChild(el);
-        }
-      });
+          var container = document.getElementById('notifylist');  // todo: detect scrollUp
+          container.scrollTop = container.scrollHeight;
+      }});
       document.ws = webSocketBridge; /* for debugging */
     })
     </script>
+    {% endif %}
   </body>
 </html>

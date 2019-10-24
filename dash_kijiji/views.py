@@ -35,10 +35,11 @@ class ViewCase(View):
         """authorized user gets to see cases with their output (channel)"""
         if request.user.is_authenticated:  # todo: move to decorator or logged_in class
             case = get_object_or_404(Case, id=case_id)
-            response = HttpResponse(f'<pre>Case ID: <b>{case_id}</b><br><br>{case}</pre>')
+            context = {'case_id': case.id, 'case_log_history': case.log_history(count=20)}
+            return render(request, "dash_kijiji/home.html", context)
         else:
             response = None  # todo: redirect to own profile
-        return response
+            return response
 
 
 class About(TemplateView):
@@ -51,6 +52,6 @@ class HomeView(View):
 
 
 class Popen(View):
-    def get(self, request, **kwargs):
-        Process(['python', 'dash_kijiji\\backend_scripts\\any_python_script.py'])
+    def get(self, request, script_name, **kwargs):  # todo: case config
+        Process(['python', f'dash_kijiji\\backend_scripts\\{script_name}.py'])
         return HttpResponse('')

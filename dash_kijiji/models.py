@@ -18,6 +18,9 @@ class Case(models.Model):
     def log_last(self):
         return str(self.log).split('\r\n')[-1]
 
+    def log_history(self, count):
+        return str(self.log).split('\r\n')[count*-1:]
+
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     log = models.TextField(default='')

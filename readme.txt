@@ -1,4 +1,4 @@
-FEATURES LAYOUT:
+﻿FEATURES LAYOUT:
   [✔] 0 MongoDB integration
   [✔] 1 Login cabability
   [✘] 1.1 Login Form
@@ -6,9 +6,9 @@ FEATURES LAYOUT:
   [✔] 2 List accounts
   [✘] 3 Register new accounts (form)
   [✔] 4 See all my cases
-  [✘] 5 Run case scripts
+  [✔] 5 Run case scripts
   [✘] 5.1 Import scripts and configs
-  [✘] 5.2 Broadcast output
+  [✔] 5.2 Broadcast output
   [✘] 6 Run scheduled case scripts
 
 
@@ -32,4 +32,4 @@ Python 3.6
 Django 2.2
 Djongo
 MongoDB
-Redis for messaging
+Redis

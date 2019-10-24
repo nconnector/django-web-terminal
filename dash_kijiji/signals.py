@@ -14,5 +14,6 @@ def case_edited(sender, instance, **kwargs):
     async_to_sync(channel_layer.group_send)(
         "logging", {"type": "case.logging",  # logginig - group name; type - case_logging in consumers.py
                     "event": "log edited",
-                    "last_log": instance.log_last(),
+                    "case_id": instance.id,
+                    "case_last_log": instance.log_last(),
                     })
