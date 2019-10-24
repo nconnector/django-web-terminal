@@ -4,11 +4,7 @@ from django.views.generic import TemplateView
 from django.http import HttpResponse
 from .models import Account, Case
 
-# chat
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse
-from django.views.generic import DetailView, ListView
-from django.http import Http404, HttpResponseForbidden
+from .backend_scripts.stdout_intercept import Process
 
 
 class Login(View):
@@ -49,6 +45,12 @@ class About(TemplateView):
     template_name = 'dash_kijiji/about.html'
 
 
-class HomeView(TemplateView):
-    template_name = 'dash_kijiji/home.html'
+class HomeView(View):
+    def get(self, request, **kwargs):
+        return render(request, "dash_kijiji/home.html")
 
+
+class Popen(View):
+    def get(self, request, **kwargs):
+        Process(['python', 'dash_kijiji\\backend_scripts\\any_python_script.py'])
+        return HttpResponse('')

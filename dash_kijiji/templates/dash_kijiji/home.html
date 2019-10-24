@@ -4,10 +4,17 @@
     <title>Notifier</title>
     <script src="{% static 'dash_kijiji/js/websocketbridge.js' %}" type="text/javascript"></script>
   </head>
+  <style>
+p.scrollable {
+  background-color: lightblue;
+  height: 80%;
+  overflow: auto;
+}
+  </style>
   <body>
     <h1>Notifier</h1>
     <p>Notifications</p>
-    <p id="notifylist"></p>
+    <p class="scrollable" id="notifylist"></p>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
       const webSocketBridge = new channels.WebSocketBridge();
@@ -16,9 +23,9 @@
       webSocketBridge.connect('/notifications/');
       webSocketBridge.listen(function(event) {
         console.log("RESPONSE:", event);
-        if (event.event == "New User") {
+        if (typeof event != "undefined") {
           var el = document.createElement("span");
-          el.innerHTML = `<br>New user <b>${event.username}</b>    ${Object.keys(event)}`;
+          el.innerHTML = `<br>>>> ${event.last_log}`;
           nl.appendChild(el);
         }
       });

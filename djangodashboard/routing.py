@@ -9,13 +9,3 @@ application = ProtocolTypeRouter({  # which protocol is being used
                             path("notifications/", MessageConsumer),
     ])
 })
-
-
-# application(environ, start_response):
-# environ - dictionary of data
-# ...
-# start_response() - callable to send headers and response back
-# yield data
-
-
-# application (scope)

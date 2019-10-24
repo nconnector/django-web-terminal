@@ -13,4 +13,6 @@ urlpatterns = [
 
     path('chat/', views.HomeView.as_view()),
 
+    path('popen/', views.Popen.as_view()),
+
 ]
