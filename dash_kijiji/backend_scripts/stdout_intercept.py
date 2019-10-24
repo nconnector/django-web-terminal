@@ -11,28 +11,24 @@ AppMonitor.p.pid: subprocess ID
 
 import subprocess
 from ..models import Case
+import sys
 
 
-class Process:
-    def __init__(self, cmd: list):
-        self.cmd = cmd
-        self.output_list = []
+def execute_and_stream(cmd):  # running python include -u flag: unbuffered
+    def listen(cmd):
         print(f'running: {cmd}')
-        self.p = subprocess.Popen(self.cmd, stdout=subprocess.PIPE, shell=True, universal_newlines=True)
-        for path in self.monitor_process():
-            self.message(path[:-1])  # strip \n at the end
-            self.output_list.append(path[:-1])
-
-    def monitor_process(self):
-        for stdout_line in iter(self.p.stdout.readline, ""):
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True, universal_newlines=True)
+        for stdout_line in iter(p.stdout.readline, ""):
+            sys.stdout.flush()
             yield stdout_line
-        self.p.stdout.close()
-        return_code = self.p.wait()
+        p.stdout.close()
+        return_code = p.wait()
         if return_code:
-            raise subprocess.CalledProcessError(return_code, self.cmd)
+            raise subprocess.CalledProcessError(return_code, cmd)
 
-    def message(self, msg):
+    for path in listen(cmd):
         """relay the message"""
+        msg = path[:-1]
         case = Case.objects.get(id=2)
         case.log += f'\r\n{msg}'
         case.save()

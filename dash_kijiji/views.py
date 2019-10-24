@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 from django.http import HttpResponse
 from .models import Account, Case
 
-from .backend_scripts.stdout_intercept import Process
+from .backend_scripts.stdout_intercept import execute_and_stream
 
 
 class Login(View):
@@ -53,5 +53,5 @@ class HomeView(View):
 
 class Popen(View):
     def get(self, request, script_name, **kwargs):  # todo: case config
-        Process(['python', f'dash_kijiji\\backend_scripts\\{script_name}.py'])
+        execute_and_stream(['python', '-u', f'dash_kijiji\\backend_scripts\\{script_name}.py'])
         return HttpResponse('')
