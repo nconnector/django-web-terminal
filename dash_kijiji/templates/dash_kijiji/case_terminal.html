@@ -7,7 +7,7 @@
   <style>
 p.scrollable {
   background-color: lightblue;
-  width: 625px;
+  width: 650px;
   height: 80%;
   overflow: auto;
   font-family: monospace;
@@ -19,7 +19,8 @@ p.scrollable {
   <body>
     <h1>Case - {{ case.title }}</h1>
     {% if case_id %}
-    <p id="time">Current time: </p>
+    <h4>Status: {{ case.process_status }}</h4>
+    <p id="time"> </p>
     <p class="scrollable" id="notifylist">
       {% for log_entry in case_log_history %}
         <span><br>    >>> {{ log_entry }}</span>
@@ -27,18 +28,18 @@ p.scrollable {
         <span><br>    >>> START</span>
       {% endfor %}
     </p>
-    <p>
-      <form action='' method='POST'>
+    <table><tr>
+      <td><form action='' method='POST'>
         <button type='submit'>Run_old</button>{% csrf_token %}
         <input type="hidden"  name="case_id" value="{{ case_id }}">
         <input type="hidden"  name="action" value="run">
-      </form>
-      <form action='' method='POST'>
+      </form></td>
+      <td><form action='' method='POST'>
         <button type='submit'>Kill_old</button>{% csrf_token %}
         <input type="hidden"  name="case_id" value="{{ case_id }}">
         <input type="hidden"  name="action" value="kill">
-      </form>
-    </p>
+      </form></td>
+    </tr></table>
     <script>   // todo: move js elsewhere
 
     function checkTime(i) {

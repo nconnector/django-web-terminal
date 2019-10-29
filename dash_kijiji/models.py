@@ -2,6 +2,7 @@ import sys
 import subprocess
 import json
 import signal
+import psutil
 from os import kill
 from django.db import models
 from pathlib import Path
@@ -34,7 +35,7 @@ class Case(models.Model):
         return str(self.log).split('\r\n')[-1]
 
     def test(self):
-        print("TESTINGTESTINGTESTINGTESTINGTESTINGTESTINGTESTINGTESTINGTESTING")  # todo: remove
+        print("TESTINGTESTINGTESTINGTESTINGTESTINGTESTINGTESTINGTESTINGTESTING")  # todo: remove after AJAX
         return ''
 
     def log_history(self, count):
@@ -51,7 +52,10 @@ class Case(models.Model):
         def listen():
             p = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, shell=False, universal_newlines=True)
             self.pid = p.pid
-            print(f'case: {self.title} pid: {p.pid} running: {cmd}')
+            msg_open = f'case: {self.title} pid: {p.pid}'
+            self.log += f'\r\n{msg_open}'
+            print(f'{msg_open}  {cmd}')
+            self.save()
             for stdout_line in iter(p.stdout.readline, ""):
                 sys.stdout.flush()
                 yield stdout_line
@@ -70,17 +74,31 @@ class Case(models.Model):
             print(f'ERROR: PID for {self.title} is not None. Kill PID {self.pid} and try again.')
 
     def process_kill(self):
+        # kill process if it is alive
         if self.pid:
-            print(f'Case {self.id} killing process: {self.pid}')
+            msg_kill = f'Case {self.title} killing process: {self.pid}'
+            print(msg_kill)
             try:
                 kill(self.pid, signal.SIGTERM)
             except OSError:
-                print(f'Looks like the process has been killed already. {self.pid}')
-            finally:
-                self.pid = None
-                self.save()
+                print('WARNING: there is no process with stored PID - it was closed from outside')
+                print('Setting PID to None')
+            self.pid = None
+            self.log += f'\r\n{msg_kill}'
+            self.save()
         else:
-            print(f'ERROR attempting to kill the process: PID for this case is {self.pid}')
+            print(f'ERROR: attempting to kill the process: PID for this case is {self.pid}')
+
+    def process_status(self):
+        # None - False, dead - False, alive - True
+        if self.pid:
+            try:
+                psutil.Process(self.pid).status()
+                return True
+            except psutil.NoSuchProcess:
+                return False
+        else:
+            return False
 
     # MODEL VARIABLES
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
