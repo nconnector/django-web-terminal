@@ -1,7 +1,8 @@
+from pathlib import Path
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.base import View
 from django.views.generic import TemplateView
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from .models import Account, Case
 
 from .backend_scripts.stdout_intercept import execute_and_stream
@@ -36,22 +37,18 @@ class ViewCase(View):
         if request.user.is_authenticated:  # todo: move to decorator or logged_in class
             case = get_object_or_404(Case, id=case_id)
             context = {'case_id': case.id, 'case_log_history': case.log_history(count=20)}
-            return render(request, "dash_kijiji/home.html", context)
+            return render(request, "dash_kijiji/case_terminal.html", context)
         else:
             response = None  # todo: redirect to own profile
             return response
 
+    def post(self, request, *args, **kwargs):
+        script_name = request.POST['script_name']
+        cwd = Path(f"dash_kijiji/backend_scripts/")  # todo: to config
+        path = cwd / f"{script_name}.py"  # todo: to config
+        execute_and_stream(['python', '-u', str(path.absolute())], cwd)
+        return HttpResponseRedirect(self.request.path_info)
+
 
 class About(TemplateView):
     template_name = 'dash_kijiji/about.html'
-
-
-class HomeView(View):
-    def get(self, request, **kwargs):
-        return render(request, "dash_kijiji/home.html")
-
-
-class Popen(View):
-    def get(self, request, script_name, **kwargs):  # todo: case config
-        execute_and_stream(['python', '-u', f'dash_kijiji\\backend_scripts\\{script_name}.py'])
-        return HttpResponse('')

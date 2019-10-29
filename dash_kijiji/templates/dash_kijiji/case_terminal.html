@@ -15,7 +15,7 @@ p.scrollable {
   <body>
     <h1>Case Page</h1>
     {% if case_id %}
-    <p>Notifications</p>
+    <p id="time">Current time: </p>
     <p class="scrollable" id="notifylist">
       {% for log_entry in case_log_history %}
         <span><br>    >>> {{ log_entry }}</span>
@@ -23,7 +23,35 @@ p.scrollable {
         <span><br>    >>> START</span>
       {% endfor %}
     </p>
+    <p>
+      <form action='' method='POST'>
+        <button type='submit'>Run test</button>{% csrf_token %}
+        <input type="hidden" value="telegram" name="script_name">
+      </form>
+    </p>
     <script>   // todo: move js elsewhere
+    function checkTime(i) {
+      if (i < 10) {
+        i = "0" + i;
+      }
+      return i;
+    }
+
+    function startTime() {
+      var today = new Date();
+      var h = today.getHours();
+      var m = today.getMinutes();
+      var s = today.getSeconds();
+      // add a zero in front of numbers<10
+      m = checkTime(m);
+      s = checkTime(s);
+      document.getElementById('time').innerHTML ='Time: ' + h + ":" + m + ":" + s;
+      t = setTimeout(function() {
+        startTime()
+      }, 500);
+    }
+    startTime();
+
     document.addEventListener('DOMContentLoaded', function() {
       const webSocketBridge = new channels.WebSocketBridge();
       const nl = document.querySelector("#notifylist");

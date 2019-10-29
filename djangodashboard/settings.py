@@ -28,7 +28,8 @@ SECRET_KEY = config['DJANGO']['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [config['NETWORK']['DEV_IP'], config['NETWORK']['PROD_IP'], '127.0.0.1']
+NW = config['NETWORK']
+ALLOWED_HOSTS = [NW['DEV_IP'], NW['PROD_IP'], '127.0.0.1']
 
 
 # Application definition
@@ -134,6 +135,8 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {"hosts": [(config['NETWORK']['PROD_IP'], 6379)]}  # todo: change to "localhost" for deployment
+        "CONFIG": {"hosts": [f"redis://:{NW['REDIS_PWD']}@{NW['PROD_IP']}:{NW['REDIS_PORT']}/0"]}
+        # "CONFIG": {"hosts": [(config['NETWORK']['PROD_IP'], config['NETWORK']['REDIS_PORT'])]}  # todo: 127.0.0.1
+
     }
 }

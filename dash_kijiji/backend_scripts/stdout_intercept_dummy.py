@@ -11,13 +11,13 @@ AppMonitor.p.pid: subprocess ID
 
 import sys
 import subprocess
-from ..models import Case
+sys.path.append("..")
 
 
 def execute_and_stream(cmd, cwd):  # running python include -u flag: unbuffered
     def listen(cmd, cwd):
+        print(f'running: {cmd} at cwd {cwd}')
         p = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, shell=True, universal_newlines=True)
-        print(f'pid: {p.pid} running: {cmd}')
         for stdout_line in iter(p.stdout.readline, ""):
             sys.stdout.flush()
             yield stdout_line
@@ -29,6 +29,10 @@ def execute_and_stream(cmd, cwd):  # running python include -u flag: unbuffered
     for path in listen(cmd, cwd):
         """relay the message"""
         msg = path[:-1]
-        case = Case.objects.get(id=2)  # todo: get ID from config
-        case.log += f'\r\n{msg}'
-        case.save()
+        print(msg)
+
+
+script_name = 'telegram'
+path = f'dash_kijiji\\backend_scripts\\{script_name}.py'  # todo: to config
+cwd = '.\\'+'\\\\'.join(path.split('\\')[:-1])  # todo: to config
+execute_and_stream(['python', '-u', path], cwd)
