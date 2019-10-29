@@ -16,7 +16,7 @@ from ..models import Case
 
 def execute_and_stream(cmd, cwd):  # running python include -u flag: unbuffered
     def listen(cmd, cwd):
-        p = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, shell=True, universal_newlines=True)
+        p = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, shell=False, universal_newlines=True)
         print(f'pid: {p.pid} running: {cmd}')
         for stdout_line in iter(p.stdout.readline, ""):
             sys.stdout.flush()
@@ -29,6 +29,6 @@ def execute_and_stream(cmd, cwd):  # running python include -u flag: unbuffered
     for path in listen(cmd, cwd):
         """relay the message"""
         msg = path[:-1]
-        case = Case.objects.get(id=2)  # todo: get ID from config
+        case = Case.objects.get(id=1)  # todo: get ID from config
         case.log += f'\r\n{msg}'
         case.save()

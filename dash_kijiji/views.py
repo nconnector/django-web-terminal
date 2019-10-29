@@ -1,11 +1,8 @@
-from pathlib import Path
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.base import View
 from django.views.generic import TemplateView
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Account, Case
-
-from .backend_scripts.stdout_intercept import execute_and_stream
 
 
 class Login(View):
@@ -43,11 +40,12 @@ class ViewCase(View):
             return response
 
     def post(self, request, *args, **kwargs):
-        script_name = request.POST['script_name']
-        cwd = Path(f"dash_kijiji/backend_scripts/")  # todo: to config
-        path = cwd / f"{script_name}.py"  # todo: to config
-        execute_and_stream(['python', '-u', str(path.absolute())], cwd)
-        return HttpResponseRedirect(self.request.path_info)
+        if request.POST['script_name']:
+            script_name = request.POST['script_name']
+            case.process_open()
+            return HttpResponseRedirect(self.request.path_info)
+        else:
+            return HttpResponseRedirect(self.request.path_info)
 
 
 class About(TemplateView):
