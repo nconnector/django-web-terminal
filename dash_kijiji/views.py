@@ -7,8 +7,11 @@ from .models import Account, Case
 
 class Login(View):
     def get(self, request, **kwargs):
-        response = HttpResponse(f'Login page')
-        return response
+        if not request.user.is_authenticated:
+            response = HttpResponse(f'Login page')
+            return response
+        else:
+            pass  # todo: redirect to main
 
 
 class Main(View):
@@ -24,7 +27,7 @@ class ViewAccount(View):
         if request.user.is_authenticated:
             response = HttpResponse(f'Account: <b>{account_name}</b>')
         else:
-            response = None  # todo: redirect to own profile
+            response = None  # todo: redirect to login
         return response
 
 
@@ -33,19 +36,20 @@ class ViewCase(View):
         """authorized user gets to see cases with their output (channel)"""
         if request.user.is_authenticated:  # todo: move to decorator or logged_in class
             case = get_object_or_404(Case, id=case_id)
-            context = {'case_id': case.id, 'case_log_history': case.log_history(count=20)}
+            context = {'case_id': case.id, 'case_log_history': case.log_history(count=20), 'case': case}
             return render(request, "dash_kijiji/case_terminal.html", context)
         else:
-            response = None  # todo: redirect to own profile
+            response = None  # todo: redirect to login profile
             return response
 
-    def post(self, request, *args, **kwargs):
-        if request.POST['script_name']:
-            script_name = request.POST['script_name']
+    def post(self, request, *args, **kwargs):  # todo: auth this!
+        case = get_object_or_404(Case, id=request.POST['case_id'])
+        action = request.POST['action']
+        if action == 'run':
             case.process_open()
-            return HttpResponseRedirect(self.request.path_info)
-        else:
-            return HttpResponseRedirect(self.request.path_info)
+        elif action == 'kill':
+            case.process_kill()
+        return HttpResponseRedirect(self.request.path_info)
 
 
 class About(TemplateView):

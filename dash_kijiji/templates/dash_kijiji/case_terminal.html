@@ -1,19 +1,23 @@
 {% load staticfiles %}
 <html>
   <head>
-    <title>Case Page</title>
+    <title>Case - {{ case.title }}</title>
     <script src="{% static 'dash_kijiji/js/websocketbridge.js' %}" type="text/javascript"></script>
   </head>
   <style>
 p.scrollable {
   background-color: lightblue;
-  width: 65%;
+  width: 625px;
   height: 80%;
   overflow: auto;
+  font-family: monospace;
+}
+* {
+  font-family: monospace;
 }
   </style>
   <body>
-    <h1>Case Page</h1>
+    <h1>Case - {{ case.title }}</h1>
     {% if case_id %}
     <p id="time">Current time: </p>
     <p class="scrollable" id="notifylist">
@@ -25,17 +29,18 @@ p.scrollable {
     </p>
     <p>
       <form action='' method='POST'>
-        <button type='submit'>Run</button>{% csrf_token %}
+        <button type='submit'>Run_old</button>{% csrf_token %}
         <input type="hidden"  name="case_id" value="{{ case_id }}">
         <input type="hidden"  name="action" value="run">
       </form>
       <form action='' method='POST'>
-        <button type='submit'>Kill</button>{% csrf_token %}
+        <button type='submit'>Kill_old</button>{% csrf_token %}
         <input type="hidden"  name="case_id" value="{{ case_id }}">
         <input type="hidden"  name="action" value="kill">
       </form>
     </p>
     <script>   // todo: move js elsewhere
+
     function checkTime(i) {
       if (i < 10) {
         i = "0" + i;

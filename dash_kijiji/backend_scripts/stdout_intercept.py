@@ -11,13 +11,19 @@ AppMonitor.p.pid: subprocess ID
 
 import sys
 import subprocess
-from ..models import Case
+try:
+    from ..models import Case
+except ImportError as e:
+    print(f'soft_warning: {__name__} {e}')
 
 
-def execute_and_stream(cmd, cwd):  # running python include -u flag: unbuffered
+def execute_and_stream(cmd, cwd, case_id=1):  # running python include -u flag: unbuffered
+    case = Case.objects.get(id=case_id)
+
     def listen(cmd, cwd):
         p = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, shell=False, universal_newlines=True)
-        print(f'pid: {p.pid} running: {cmd}')
+        case.pid = p.pid
+        print(f'case: {case.title} pid: {p.pid} running: {cmd}')
         for stdout_line in iter(p.stdout.readline, ""):
             sys.stdout.flush()
             yield stdout_line
@@ -26,9 +32,11 @@ def execute_and_stream(cmd, cwd):  # running python include -u flag: unbuffered
         if return_code:
             raise subprocess.CalledProcessError(return_code, cmd)
 
-    for path in listen(cmd, cwd):
-        """relay the message"""
-        msg = path[:-1]
-        case = Case.objects.get(id=1)  # todo: get ID from config
-        case.log += f'\r\n{msg}'
-        case.save()
+    if not case.pid:
+        for path in listen(cmd, cwd):
+            """relay the message"""
+            msg = path[:-1]
+            case.log += f'\r\n{msg}'
+            case.save()
+    else:
+        print(f'ERROR: process for {case.title} is already present. Kill pid {case.pid} and try again.')
