@@ -1,10 +1,12 @@
+import sys
+import subprocess
 import json
 import signal
 from os import kill
 from django.db import models
 from pathlib import Path
 
-from .backend_scripts.stdout_intercept import execute_and_stream
+# from .backend_scripts.stdout_intercept import execute_and_stream
 
 
 # Create your models here.
@@ -41,20 +43,46 @@ class Case(models.Model):
     def get_config(self):
         return json.loads(self.json_config.replace('\r\n', ''))
 
-    def process_open(self):
-        path = Path(Script.objects.get(id=self.script).script_path)
+    def process_open(self):  # running python include -u flag: unbuffered
+        path = Path(self.script.script_path)
         cwd = path.parent
-        # execute_and_stream will store case.pid
-        execute_and_stream(['python', '-u', str(path.absolute())], cwd)  # todo: python path
+        cmd = ['python', '-u', str(path.absolute())]  # todo: python path
+
+        def listen():
+            p = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, shell=False, universal_newlines=True)
+            self.pid = p.pid
+            print(f'case: {self.title} pid: {p.pid} running: {cmd}')
+            for stdout_line in iter(p.stdout.readline, ""):
+                sys.stdout.flush()
+                yield stdout_line
+            p.stdout.close()
+            return_code = p.wait()
+            if return_code:
+                raise subprocess.CalledProcessError(return_code, cmd)
+
+        if not self.pid:
+            for path in listen():
+                """relay the message"""
+                msg = path[:-1]
+                self.log += f'\r\n{msg}'
+                self.save()
+        else:
+            print(f'ERROR: PID for {self.title} is not None. Kill PID {self.pid} and try again.')
 
     def process_kill(self):
         if self.pid:
-            self.pid = None
-            kill(self.pid, signal.SIGTERM)
-            print(f'Case {self.id} killed process: {self.pid}')
+            print(f'Case {self.id} killing process: {self.pid}')
+            try:
+                kill(self.pid, signal.SIGTERM)
+            except OSError:
+                print(f'Looks like the process has been killed already. {self.pid}')
+            finally:
+                self.pid = None
+                self.save()
         else:
-            print(f'ERROR attempting to kill the process: PID for this case is ')
+            print(f'ERROR attempting to kill the process: PID for this case is {self.pid}')
 
+    # MODEL VARIABLES
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     script = models.ForeignKey(Script, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)

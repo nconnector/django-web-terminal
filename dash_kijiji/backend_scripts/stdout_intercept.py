@@ -17,7 +17,7 @@ except ImportError as e:
     print(f'soft_warning: {__name__} {e}')
 
 
-def execute_and_stream(cmd, cwd, case_id=1):  # running python include -u flag: unbuffered
+def execute_and_stream(cmd, cwd, case_id):  # running python include -u flag: unbuffered
     case = Case.objects.get(id=case_id)
 
     def listen(cmd, cwd):
