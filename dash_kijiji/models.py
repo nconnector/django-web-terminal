@@ -62,12 +62,16 @@ class Case(models.Model):
             p.stdout.close()
             return_code = p.wait()
             if return_code:
-                raise subprocess.CalledProcessError(return_code, cmd)
+                yield False
+                # raise subprocess.CalledProcessError(return_code, cmd)
 
         if not self.pid:
             for path in listen():
-                """relay the message"""
-                msg = path[:-1]
+                # relay the message if it is not False
+                try:
+                    msg = path[:-1]
+                except TypeError:
+                    break
                 self.log += f'\r\n{msg}'
                 self.save()
         else:
