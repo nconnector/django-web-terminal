@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.base import View
 from django.views.generic import TemplateView
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from .models import Account, Case
 
 
@@ -44,12 +44,14 @@ class ViewCase(View):
 
     def post(self, request, *args, **kwargs):  # todo: auth this!
         case = get_object_or_404(Case, id=request.POST['case_id'])
-        action = request.POST['action']
+        action = request.POST.get('action')
         if action == 'run':
             case.process_open()
         elif action == 'kill':
             case.process_kill()
-        return HttpResponseRedirect(self.request.path_info)
+        elif action == 'status':
+            case.process_status()
+        return JsonResponse({"post_success": True, "a": action})
 
 
 class About(TemplateView):

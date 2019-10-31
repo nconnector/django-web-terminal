@@ -17,7 +17,7 @@ p.scrollable {
 }
   </style>
   <body>
-    <h1>Case - {{ case.title }}</h1>
+    <h1>Case - {{ case.title }}</h1> <!--// todo: don't pass entire Case object-->
     {% if case_id %}
     <h4>Status: {{ case.process_status }}</h4>
     <p id="time"> </p>
@@ -29,26 +29,44 @@ p.scrollable {
       {% endfor %}
     </p>
     <table><tr>
-      <td><form action='' method='POST'>
+      <td><form action="" method='post' class="action_form">
         <button type='submit'>Run_old</button>{% csrf_token %}
         <input type="hidden"  name="case_id" value="{{ case_id }}">
         <input type="hidden"  name="action" value="run">
       </form></td>
-      <td><form action='' method='POST'>
+      <td><form action="" method='post' class="action_form">
         <button type='submit'>Kill_old</button>{% csrf_token %}
         <input type="hidden"  name="case_id" value="{{ case_id }}">
         <input type="hidden"  name="action" value="kill">
       </form></td>
     </tr></table>
-    <script>   // todo: move js elsewhere
 
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const webSocketBridge = new channels.WebSocketBridge();
+          const nl = document.querySelector("#notifylist");
+          webSocketBridge.connect('/notifications/');  // todo: stop receiving every Case's notes
+          webSocketBridge.listen(function(event) {
+            console.log("RESPONSE:", event);
+            if (event.case_id == "{{ case_id }}") {
+              var el = document.createElement("span");
+              el.innerHTML = `<br>    >>> ${event.case_last_log}`;
+              nl.appendChild(el);
+              var container = document.getElementById('notifylist');  // todo: detect scrollUp
+              container.scrollTop = container.scrollHeight;
+            }
+          });
+          document.ws = webSocketBridge; /* for debugging */
+        });
+    </script>
+
+
+    <script>   // todo: move js elsewhere
     function checkTime(i) {
-      if (i < 10) {
-        i = "0" + i;
-      }
+      if (i < 10) {i = "0" + i;}
       return i;
     }
-
     function startTime() {
       var today = new Date();
       var h = today.getHours();
@@ -58,28 +76,24 @@ p.scrollable {
       m = checkTime(m);
       s = checkTime(s);
       document.getElementById('time').innerHTML ='Time: ' + h + ":" + m + ":" + s;
-      t = setTimeout(function() {
-        startTime()
-      }, 500);
+      t = setTimeout(function() {startTime()}, 500);
     }
     startTime();
 
-    document.addEventListener('DOMContentLoaded', function() {
-      const webSocketBridge = new channels.WebSocketBridge();
-      const nl = document.querySelector("#notifylist");
-      webSocketBridge.connect('/notifications/');  // todo: stop receiving every Case's notes
-      webSocketBridge.listen(function(event) {
-        console.log("RESPONSE:", event);
-        if (event.case_id == "{{ case_id }}") {
-          var el = document.createElement("span");
-          el.innerHTML = `<br>    >>> ${event.case_last_log}`;
-          nl.appendChild(el);
-          var container = document.getElementById('notifylist');  // todo: detect scrollUp
-          container.scrollTop = container.scrollHeight;
-        }
-      });
-      document.ws = webSocketBridge; /* for debugging */
-    })
+    </script>
+
+
+    <script src="{% static 'dash_kijiji/js/jquery-3.4.1.min.js' %}"></script>
+    <script>
+        $(".action_form").on("submit", function(event){
+          event.preventDefault();
+          console.log("form submitted!");
+          $.ajax({
+            type : "POST",
+            data : $(this).serializeArray(),
+            success : function(json) {console.log(json)}, // log the returned json to the console
+          });
+        });
     </script>
     {% endif %}
   </body>
