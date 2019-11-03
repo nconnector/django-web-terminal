@@ -34,20 +34,14 @@ class Case(models.Model):
     def log_last(self):
         return str(self.log).split('\r\n')[-1]
 
-    def test(self):
-        print("TESTINGTESTINGTESTINGTESTINGTESTINGTESTINGTESTINGTESTINGTESTING")  # todo: remove after AJAX
-        return ''
-
     def log_history(self, count):
         return str(self.log).split('\r\n')[count*-1:]
-
-    def get_config(self):
-        return json.loads(self.json_config.replace('\r\n', ''))
 
     def process_open(self):  # running python include -u flag: unbuffered
         path = Path(self.script.script_path)
         cwd = path.parent
-        cmd = ['python', '-u', str(path.absolute())]  # todo: python path
+        args = ''
+        cmd = ['python', '-u', str(path.absolute()), args]  # todo: python path
 
         def listen():
             p = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, shell=False, universal_newlines=True)
@@ -67,7 +61,7 @@ class Case(models.Model):
 
         if not self.pid:
             for path in listen():
-                # relay the message if it is not False
+                # relay the message if it is str (not False)
                 try:
                     msg = path[:-1]
                 except TypeError:
@@ -106,15 +100,15 @@ class Case(models.Model):
 
     # MODEL VARIABLES
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    script = models.ForeignKey(Script, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=160)
+    email = models.EmailField()
+    pwd = models.CharField(max_length=32)
+    script = models.ForeignKey(Script, on_delete=models.CASCADE)  # todo: add choice
     log = models.TextField(default='', blank=True)
     pid = models.IntegerField(null=True, blank=True, default=None)  # None while process is not running
-    json_config = models.TextField(default='{}')  # todo: validate for double quotes '{"foo": "bar"}'
-    platform = models.CharField(  # todo: remove as unnecessary or keep as label?
-        max_length=200,
-        choices=[
-            ('kijiji', 'Kijiji.ca'),
-            ('instagram', 'Instagram'),
-                 ],
-        default=None)
+    case_json_config = models.TextField(default='{}')  # todo: validate for double quotes '{"foo": "bar"}'
+
+
+class Advert(models.Model):
+    case = models.ForeignKey(Case, on_delete=models.CASCADE)
+    advert_json_config = models.TextField(default='{}')  # todo: validate for double quotes '{"foo": "bar"}'
