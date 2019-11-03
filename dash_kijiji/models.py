@@ -14,8 +14,8 @@ from pathlib import Path
 class Account(models.Model):
     def __str__(self):
         return self.unm
-    unm = models.CharField(max_length=32)
-    pwd = models.CharField(max_length=16)
+    unm = models.EmailField(max_length=32)
+    pwd = models.CharField(max_length=16)  # todo: migrate to User
 
 
 class Script(models.Model):
@@ -29,7 +29,7 @@ class Script(models.Model):
 class Case(models.Model):
     def __str__(self):
         """a __str__ call to instance returns the value below"""
-        return f"{self.platform} : {self.title}"
+        return f"case: {self.unm}"
 
     def log_last(self):
         return str(self.log).split('\r\n')[-1]
@@ -98,17 +98,30 @@ class Case(models.Model):
         else:
             return False
 
+    def make_config(self, ad_list: list):
+        json.dumps(dict(
+            telegram_bot_token=self.telegram_bot_token,
+            telegram_admin=int(self.telegram_admin)),
+            unm=self.unm,
+            pwd=self.pwd,
+            interval_hrs=int(self.interval_hrs)
+        )  # todo: make this happen
+
     # MODEL VARIABLES
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    title = models.CharField(max_length=160)
-    email = models.EmailField()
-    pwd = models.CharField(max_length=32)
+    unm = models.EmailField(max_length=32)
+    pwd = models.CharField(max_length=9)
+    telegram_bot_token = models.CharField(max_length=45, default='123456789:AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPqq1')
+    telegram_admin = models.PositiveIntegerField(default=0)
+    interval_hrs = models.PositiveIntegerField(default=0)
+
     script = models.ForeignKey(Script, on_delete=models.CASCADE)  # todo: add choice
     log = models.TextField(default='', blank=True)
-    pid = models.IntegerField(null=True, blank=True, default=None)  # None while process is not running
-    case_json_config = models.TextField(default='{}')  # todo: validate for double quotes '{"foo": "bar"}'
+    pid = models.PositiveIntegerField(null=True, blank=True, default=None)  # None while process is not running
 
 
 class Advert(models.Model):
     case = models.ForeignKey(Case, on_delete=models.CASCADE)
-    advert_json_config = models.TextField(default='{}')  # todo: validate for double quotes '{"foo": "bar"}'
+    title_internal = models.CharField(default='title', max_length=32)
+    template_dir = models.CharField(default="templates/", help_text="config_directory", max_length=100)
+    json_ad_config = models.TextField(default='{}')  # todo: validate for double quotes '{"foo": "bar"}'
