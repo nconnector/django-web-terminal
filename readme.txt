@@ -8,7 +8,7 @@
   [✔] 5 Run case scripts
   [✔] 5.1 Import scripts and configs
   [✔] 5.2 Broadcast output
-  [✘] 6 Run scheduled case scripts
+  [✘] 6 Run scheduled case scriptscases
 
 
 The dashboard controls a database of accounts on various platforms. 

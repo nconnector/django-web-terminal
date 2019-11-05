@@ -10,6 +10,9 @@
 <pre><h3>Accounts List:</h3>{% if account_list %}{% for account in account_list %}
     <b><a href="/profile/{{ account.unm }}/">{{ account.unm }}</a></b><br>
         {% for case in account.case_set.all %}* {{ case }}
+            {% for ad in case.kijijiad_set.all %}* {{ ad }}
+            {% empty %}<i>none</i>
+            {% endfor %}
         {% empty %}<i>none</i>
         {% endfor %}
     {% endfor %}
