@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'channels',  # pip install channels
+    'users.apps.UsersConfig',  # custom users app
     'dash_kijiji',
 ]
 
@@ -92,6 +93,7 @@ DATABASES = {
 }
 
 
+AUTH_USER_MODEL = "users.User"
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 

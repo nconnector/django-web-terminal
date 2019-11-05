@@ -9,7 +9,6 @@ urlpatterns = [
     path('login/', views.Login.as_view(), name='login'),
     path('about/', views.About.as_view(), name='about'),
 
-    path('account/<account_name>/', views.ViewAccount.as_view(), name='account'),
     path('case/<case_id>/', views.ViewCase.as_view(), name='case'),
 
 ]

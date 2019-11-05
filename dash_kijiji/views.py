@@ -2,7 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic.base import View
 from django.views.generic import TemplateView
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from .models import Account, Case
+from django.contrib.auth import get_user_model
+from .models import Case
 
 
 class Login(View):
@@ -17,18 +18,8 @@ class Login(View):
 class Main(View):
     """todo: redirect to own profile if not admin"""
     def get(self, request, **kwargs):
-        context = {'account_list': Account.objects.all()}
+        context = {'account_list': get_user_model().objects.all()}
         return render(request, "dash_kijiji/account_list.html", context)
-
-
-class ViewAccount(View):
-    def get(self, request, account_name, **kwargs):
-        """authorized user gets to see profiles"""
-        if request.user.is_authenticated:
-            response = HttpResponse(f'Account: <b>{account_name}</b>')
-        else:
-            response = None  # todo: redirect to login
-        return response
 
 
 class ViewCase(View):

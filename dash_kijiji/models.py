@@ -3,9 +3,10 @@ import subprocess
 import json
 import signal
 import psutil
+from pathlib import Path
 from os import kill, remove
 from django.db import models
-from pathlib import Path
+from django.conf import settings
 
 # from .backend_scripts.stdout_intercept import execute_and_stream
 
@@ -119,7 +120,7 @@ class Case(models.Model):
         return Path(f'dash_kijiji/backend_scripts/__temp__/case_{self.id}.json').absolute()
 
     # MODEL VARIABLES
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    account = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     unm = models.EmailField(max_length=32)
     pwd = models.CharField(max_length=9)
     telegram_bot_token = models.CharField(max_length=45, default='123456789:AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPqq1')
