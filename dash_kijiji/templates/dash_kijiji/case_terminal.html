@@ -1,45 +1,91 @@
 {% load staticfiles %}
 <html>
   <head>
-    <title>Case - {{ case.title }}</title>
-    <script src="{% static 'dash_kijiji/js/websocketbridge.js' %}" type="text/javascript"></script>
+      <title>Case page</title>
+      <script src="{% static 'dash_kijiji/js/websocketbridge.js' %}" type="text/javascript"></script>
+    <style>
+      ::-webkit-scrollbar {width: 5px;}
+      ::-webkit-scrollbar-thumb {background: #888;}
+      ::-webkit-scrollbar-thumb:hover {background: #fff;}
+      span.scrollable {
+        width: 650px;
+        height: 60%;
+        overflow: auto;
+        line-height: 1;
+        border-top: 3px solid #1a1a1a;
+        border-left: 10px solid #1a1a1a;
+        border-bottom: 3px solid #1a1a1a;
+      }
+    </style>
+    <link rel="stylesheet" href="{% static 'dash_kijiji/css/bootstrap.css' %}">
   </head>
-  <style>
-p.scrollable {
-  background-color: lightblue;
-  width: 650px;
-  height: 80%;
-  overflow: auto;
-  font-family: monospace;
-}
-* {
-  font-family: monospace;
-}
-  </style>
-  <body>
-    <h1>Case - {{ case.title }}</h1> <!--// todo: don't pass entire Case object-->
-    {% if case_id %}
-    <h4>Status: {{ case.process_status }}</h4>
-    <p id="time"> </p>
-    <p class="scrollable" id="notifylist">
-      {% for log_entry in case_log_history %}
-        <span><br>    >>> {{ log_entry }}</span>
-      {% empty %}
-        <span><br>    >>> START</span>
-      {% endfor %}
-    </p>
-    <table><tr>
-      <td><form action="" method='post' class="action_form">
-        <button type='submit'>Run_old</button>{% csrf_token %}
-        <input type="hidden"  name="case_id" value="{{ case_id }}">
-        <input type="hidden"  name="action" value="run">
-      </form></td>
-      <td><form action="" method='post' class="action_form">
-        <button type='submit'>Kill_old</button>{% csrf_token %}
-        <input type="hidden"  name="case_id" value="{{ case_id }}">
-        <input type="hidden"  name="action" value="kill">
-      </form></td>
-    </tr></table>
+    <div class="jumbotron">
+      <h1>{{ case }}</h1> <!--// todo: don't pass entire Case object-->
+      {% if case_id %}
+      <h4>Status: {{ case.process_status }}</h4>
+      <p id="time"> </p>
+
+      <ul class="nav nav-pills">
+
+        <li class="nav-item" style="margin: 0">
+          <a class="nav-link active" data-toggle="tab" href="#terminal">Terminal</a>
+        </li>
+        <li class="nav-item" style="margin: 0">
+          <a class="nav-link" data-toggle="tab" href="#settings">Settings</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Log Out</a>
+        </li>
+      </ul>
+      <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade active show" id="terminal">
+          <span class="card text-white bg-primary mb-3 scrollable" id="notifylist">
+            {% for log_entry in case_log_history %}
+              <span><br>    >>> {{ log_entry }}</span>
+            {% empty %}
+              <span><br>    >>> START</span>
+            {% endfor %}
+          </span>
+          <table ><tr>
+            <td><form action="" method='post' class="action_form">
+              <button type='submit' class="btn btn-primary">Run</button>{% csrf_token %}
+              <input type="hidden"  name="case_id" value="{{ case_id }}">
+              <input type="hidden"  name="action" value="run">
+            </form></td>
+            <td><form action="" method='post' class="action_form">
+              <button type='submit' class="btn btn-danger">Kill</button>{% csrf_token %}
+              <input type="hidden"  name="case_id" value="{{ case_id }}">
+              <input type="hidden"  name="action" value="kill">
+            </form></td>
+          </tr></table>
+        </div>
+        <div class="tab-pane fade" id="settings">
+          <span class="card text-white bg-info mb-3 scrollable" style="border: 20px solid #1F9BCF; line-height: 2">
+            <h6 style="color: #fff">Please select which of your ads should be active</h6>
+            <div class="form-group">
+              {% for ad in case.kijijiad_set.all %}
+
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="adCheck1" checked="">
+                      <label class="custom-control-label" style="display: inline" for="adCheck1">{{ ad }}</label>
+                    </div>
+              {% empty %}
+                    <div class="form-group">No ads to configure</div>
+              {% endfor %}
+            </div>
+          </span>
+
+          <table><tr>
+            <td><form action="" method='post' class="action_form">
+              <button type='submit' class="btn btn-info">Submit</button>{% csrf_token %}
+              <input type="hidden"  name="case_id" value="{{ case_id }}">
+              <input type="hidden"  name="action" value="kill">
+            </form></td>
+          </tr></table>
+        </div>
+      </div>
+
+    </div>
 
 
     <script>
@@ -84,6 +130,8 @@ p.scrollable {
 
 
     <script src="{% static 'dash_kijiji/js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'dash_kijiji/js/popper-1.14.7.min.js' %}"></script>
+    <script src="{% static 'dash_kijiji/js/bootstrap-4.3.1.min.js' %}"></script>
     <script>
         $(".action_form").on("submit", function(event){
           event.preventDefault();
