@@ -144,7 +144,12 @@ class KijijiAd(models.Model):
         return f'ad: {self.title_internal}'
 
     def get_config_json(self):
-        return json.loads(self.config)
+        config_json = dict(
+            title_internal=self.title_internal,
+            template_dir=str(Path(self.template_dir).absolute()),
+            json_ad_config=json.loads(self.config)
+        )
+        return config_json
 
     case = models.ForeignKey(Case, on_delete=models.CASCADE)
     title_internal = models.CharField(default='title', max_length=32)
