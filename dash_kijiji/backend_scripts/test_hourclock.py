@@ -1,8 +1,7 @@
-from time import sleep, gmtime, strftime
-import sys
+from time import sleep, strftime
 
 
 while True:
-    time_cur = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+    time_cur = strftime("%Y-%m-%d %H:%M")
     print(time_cur)
-    sleep(10)
+    sleep(60)

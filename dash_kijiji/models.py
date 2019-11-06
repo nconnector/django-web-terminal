@@ -30,7 +30,7 @@ class Script(models.Model):
 class Case(models.Model):
     def __str__(self):
         """a __str__ call to instance returns the value below"""
-        return f"case: {self.unm}"
+        return f"{self.unm} - {self.title}"
 
     def log_last(self):
         return str(self.log).split('\r\n')[-1]
@@ -39,11 +39,14 @@ class Case(models.Model):
         return str(self.log).split('\r\n')[count*-1:]
 
     def process_open(self):  # running python include -u flag: unbuffered
-        self.make_config()  # config from database for cycling
+        args = ''
+        if self.unm:  # cases with no auth require no config
+            # todo: add platform check
+            self.make_config()  # .json config from database for cycling
+            args = str(self.config_path())
         path = Path(self.script.script_path).absolute()
         cwd = path.parent
-        config_path = self.config_path()
-        cmd = ['python', '-u', str(path), str(config_path)]  # todo: python path
+        cmd = ['python', '-u', str(path), args]  # todo: python path
 
         def listen():
             p = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, shell=False, universal_newlines=True)
@@ -84,7 +87,8 @@ class Case(models.Model):
                 print('WARNING: there is no process with stored PID - it was closed from outside')
                 print('Setting PID to None')
             else:
-                remove(str(self.config_path()))  # clean up temporary config
+                if self.unm:  # todo: check for config
+                    remove(str(self.config_path()))  # clean up temporary config
             self.pid = None
             self.log += f'\r\n{msg_kill}'
             self.save()
@@ -121,10 +125,11 @@ class Case(models.Model):
 
     # MODEL VARIABLES
     account = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    unm = models.EmailField(max_length=32)
-    pwd = models.CharField(max_length=9)
-    telegram_bot_token = models.CharField(max_length=45, default='123456789:AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPqq1')
-    telegram_admin = models.PositiveIntegerField()
+    title = models.CharField(max_length=64, blank=True, default='')
+    unm = models.EmailField(max_length=32, blank=True, default='')
+    pwd = models.CharField(max_length=32, blank=True, default='')
+    telegram_bot_token = models.CharField(max_length=45, blank=True, default='123456789:AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPqq1')
+    telegram_admin = models.PositiveIntegerField(blank=True, default=None)
     interval_hrs = models.FloatField(default=12.0)
 
     live_ads = []  # todo:

@@ -16,12 +16,27 @@
         border-left: 10px solid #1a1a1a;
         border-bottom: 3px solid #1a1a1a;
       }
+      span.adconfig {
+        border: 2px solid #1a1a1a;
+        padding: 20px;
+        line-height: 2;
+        background-color: #f7f7f9
+      }
     </style>
     <link rel="stylesheet" href="{% static 'dash_kijiji/css/bootstrap.css' %}">
   </head>
+  <body>
+    {% if case %}
     <div class="jumbotron">
-      <h1>{{ case }}</h1> <!--// todo: don't pass entire Case object-->
-      {% if case_id %}
+
+      <h1><a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="padding: 0">{{ case.title }}</a>
+      <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 37px, 0px);">
+        {% for case in user.case_set.all %}
+        <a class="dropdown-item" href="/case/{{ case.id }}">* {{ case.title }} ({{ case.unm }})</a>
+        {% endfor %}
+      </div></h1>
+
+
       <h4>Status: {{ case.process_status }}</h4>
       <p id="time"> </p>
 
@@ -49,37 +64,39 @@
           <table ><tr>
             <td><form action="" method='post' class="action_form">
               <button type='submit' class="btn btn-primary">Run</button>{% csrf_token %}
-              <input type="hidden"  name="case_id" value="{{ case_id }}">
+              <input type="hidden"  name="case_id" value="{{ case.id }}">
               <input type="hidden"  name="action" value="run">
             </form></td>
             <td><form action="" method='post' class="action_form">
               <button type='submit' class="btn btn-danger">Kill</button>{% csrf_token %}
-              <input type="hidden"  name="case_id" value="{{ case_id }}">
+              <input type="hidden"  name="case_id" value="{{ case.id }}">
               <input type="hidden"  name="action" value="kill">
             </form></td>
           </tr></table>
         </div>
         <div class="tab-pane fade" id="settings">
-          <span class="card text-primary mb-3 scrollable" style="border: 2px solid #1a1a1a; line-height: 2; background-color: #f7f7f9">
-            <h6 style="color: #1a1a1a">Please select which of your ads should be active</h6>
-            <div class="form-group">
-              {% for ad in case.kijijiad_set.all %}
+          <span class="card text-white bg-primary mb-3 scrollable adconfig">
+            <div align="center">
+              <h6>Please select which of your ads should be active</h6>
+              <div class="form-group">
+                {% for ad in case.kijijiad_set.all %}
 
-                    <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="adCheck1" checked="">
-                      <label class="custom-control-label" style="display: inline" for="adCheck1">{{ ad }}</label>
-                    </div>
-              {% empty %}
-                    <div class="form-group">No ads to configure</div>
-              {% endfor %}
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="adCheck1" checked="">
+                        <label class="custom-control-label" style="display: inline" for="adCheck1">{{ ad }}</label>
+                      </div>
+                {% empty %}
+                      <div class="form-group">No ads to configure</div>
+                {% endfor %}
+              </div>
             </div>
           </span>
 
           <table><tr>
             <td><form action="" method='post' class="action_form">
               <button type='submit' class="btn btn-info">Submit</button>{% csrf_token %}
-              <input type="hidden"  name="case_id" value="{{ case_id }}">
-              <input type="hidden"  name="action" value="kill">
+              <input type="hidden"  name="case_id" value="{{ case.id }}">
+              <input type="hidden"  name="action" value="submit">
             </form></td>
           </tr></table>
         </div>
@@ -95,7 +112,7 @@
           webSocketBridge.connect('/notifications/');  // todo: stop receiving every Case's notes
           webSocketBridge.listen(function(event) {
             console.log("RESPONSE:", event);
-            if (event.case_id == "{{ case_id }}") {
+            if (event.case_id == "{{ case.id }}") {
               var el = document.createElement("span");
               el.innerHTML = `<br>    >>> ${event.case_last_log}`;
               nl.appendChild(el);

@@ -27,7 +27,7 @@ class ViewCase(View):
         """authorized user gets to see cases with their output (channel)"""
         if request.user.is_authenticated:  # todo: move to decorator or logged_in class
             case = get_object_or_404(Case, id=case_id)
-            context = {'case_id': case.id, 'case_log_history': case.log_history(count=20), 'case': case}
+            context = {'case_log_history': case.log_history(count=20), 'case': case}
             return render(request, "dash_kijiji/case_terminal.html", context)
         else:
             response = None  # todo: redirect to login profile

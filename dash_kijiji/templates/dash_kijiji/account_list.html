@@ -9,7 +9,7 @@
 <style>a {text-decoration: none; color : #000;}</style>
 <pre><h3>Accounts List:</h3>{% if account_list %}{% for account in account_list %}
     <b><a href="/profile/{{ account.unm }}/">{{ account }}</a></b><br>
-        {% for case in account.case_set.all %}* {{ case }}
+        {% for case in account.case_set.all %}* <a href="/case/{{ case.id }}/">{{ case }}</a>
             {% for ad in case.kijijiad_set.all %}* {{ ad }}
             {% empty %}<i>none</i>
             {% endfor %}

@@ -18,6 +18,7 @@ Scripts are run on a schedule for each account, with output channeled live to th
 
 Python 3.6
 Django 2.2
+Django Channels 2.3.0
 MongoDB
 Redis
 jQuery
