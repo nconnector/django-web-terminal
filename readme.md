@@ -2,8 +2,8 @@
 
 
 Web terminal client with process management functionality. 
-Created for controling multiple instances of the same processes with different configurations. 
-User may own multiple accounts(instances) with various processes, manage and monitor each instance of these processes.
+Created for controling multiple instances of different process with various configurations. 
+User may own none, one or many accounts(instances) of each process, manage and monitor each instance of these processes.
 
 
 ### FEATURES LAYOUT:  
