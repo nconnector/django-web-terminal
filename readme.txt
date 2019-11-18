@@ -11,8 +11,11 @@
   [✔] 6 Run scheduled case scripts
 
 
-The dashboard controls a database of accounts on various platforms. 
-Scripts are run on a schedule for each account, with output channeled live to the dashboard.
+Web terminal client with process management functionality. 
+
+Created for controling multiple instances of the same processes with different configurations. 
+
+User may own multiple accounts(instances) with various processes, manage and monitor each instance of these processes.
 
 
 
