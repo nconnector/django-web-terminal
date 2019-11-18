@@ -1,4 +1,6 @@
-﻿FEATURES LAYOUT:
+﻿<img src="https://github.com/nconnector/web-terminal-client/raw/master/1.jpg">
+
+FEATURES LAYOUT:
   [✔] 0 MongoDB integration
   [✔] 1 Login cabability
   [✔] 1.1 Login Form
