@@ -6,7 +6,7 @@ Created for controling multiple instances of the same processes with different c
 User may own multiple accounts(instances) with various processes, manage and monitor each instance of these processes.
 
 
-###FEATURES LAYOUT:  
+### FEATURES LAYOUT:  
 [✔] 0 MongoDB integration  
 [✔] 1 Login cabability  
 [✔] 1.1 Login Form  
@@ -19,7 +19,7 @@ User may own multiple accounts(instances) with various processes, manage and mon
 [✔] 6 Run scheduled case scripts 
 
 
-###TECHNOLOGY IMPLEMENTED:  
+### TECHNOLOGY IMPLEMENTED:  
 Python 3.6  
 Django 2.2  
 Django Channels 2.3.0  
