@@ -1,4 +1,10 @@
-﻿<img src="https://github.com/nconnector/web-terminal-client/raw/master/1.png">
+﻿<img src="https://github.com/nconnector/web-terminal-client/raw/master/1.png"> 
+
+
+    Web terminal client with process management functionality. 
+    Created for controling multiple instances of the same processes with different configurations. 
+    User may own multiple accounts(instances) with various processes, manage and monitor each instance of these processes.
+
 
 FEATURES LAYOUT:  
 [✔] 0 MongoDB integration  
@@ -10,20 +16,13 @@ FEATURES LAYOUT:
 [✔] 5 Run case scripts  
 [✔] 5.1 Import scripts and configs  
 [✔] 5.2 Broadcast output  
-[✔] 6 Run scheduled case scripts  
+[✔] 6 Run scheduled case scripts 
 
 
-Web terminal client with process management functionality. 
-
-Created for controling multiple instances of the same processes with different configurations. 
-
-User may own multiple accounts(instances) with various processes, manage and monitor each instance of these processes.
-
-
-
-Python 3.6
-Django 2.2
-Django Channels 2.3.0
-MongoDB
-Redis
-jQuery
+TECHNOLOGY IMPLEMENTED:  
+Python 3.6  
+Django 2.2  
+Django Channels 2.3.0  
+MongoDB  
+Redis  
+jQuery  
