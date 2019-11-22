@@ -1,5 +1,6 @@
 import sys
 import subprocess
+import configparser
 import json
 import signal
 import psutil
@@ -8,7 +9,11 @@ from os import kill, remove
 from django.db import models
 from django.conf import settings
 
+
 # from .backend_scripts.stdout_intercept import execute_and_stream
+config = configparser.RawConfigParser()
+config.read('config.ini')
+PYTHON = config['SYSTEM']['PYTHON']
 
 
 # Create your models here.
@@ -46,7 +51,7 @@ class Case(models.Model):
             args = str(self.config_path())
         path = Path(self.script.script_path).absolute()
         cwd = path.parent
-        cmd = ['python', '-u', str(path), args]  # todo: python path
+        cmd = [PYTHON, '-u', str(path), args]  # todo: python path
 
         def listen():
             p = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, shell=False, universal_newlines=True)
@@ -154,6 +159,6 @@ class KijijiAd(models.Model):
     case = models.ForeignKey(Case, on_delete=models.CASCADE)
     title_internal = models.CharField(default='title', max_length=32)
     template_dir = models.FilePathField(
-        path='dash_kijiji/backend_scripts/kijiji_auto_posting/templates', allow_folders=True, allow_files=False
+        path='dash_kijiji/backend_scripts/kijiji_auto_posting/templates/', allow_folders=True, allow_files=False
     )
     config = models.TextField(default='{}')  # todo: validate for double quotes '{"foo": "bar"}'

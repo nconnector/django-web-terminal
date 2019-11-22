@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import configparser
+from pathlib import Path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,14 +23,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 config = configparser.RawConfigParser()
-config.read('config.ini')
+config.read(str(Path(BASE_DIR) / 'config.ini'))
 SECRET_KEY = config['DJANGO']['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 NW = config['NETWORK']
-ALLOWED_HOSTS = [NW['DEV_IP'], NW['PROD_IP'], '127.0.0.1']
+ALLOWED_HOSTS = ['nconnector.site', NW['PROD_IP']]
 
 
 # Application definition
