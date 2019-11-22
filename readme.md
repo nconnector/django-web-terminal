@@ -10,19 +10,19 @@ Created for controling multiple instances of different process with various conf
 User may own instances of each process, manage, configure and monitor them in real time.
 
 
-### FEATURES LAYOUT:  
-[✔] MongoDB integration with Djongo  
+### FEATURES LAYOUT:
 [✔] User Authentication  
-[✔] User process management  
-[✔] User process scheduling  
-[✔] Process output broadcasting to user dashboard  
-[✔] User-configurated processes
+[✔] Process instance management  
+[✔] Process instance scheduling  
+[✔] Process instance output broadcast to user dashboard  
+[✔] User-configurated process instances
 
 
 ### TECHNOLOGY IMPLEMENTED:  
 Python 3.8  
 Django 2.2  
 Django Channels 2.3.0  
+Djgongo
 MongoDB  
 Redis
 Bootstrap  
