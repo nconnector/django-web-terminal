@@ -1,4 +1,4 @@
-﻿### DJANGO WEB TERMINAL
+﻿## Django Web Terminal
 
 <img src="https://github.com/nconnector/web-terminal-client/raw/master/1.png"> 
 
