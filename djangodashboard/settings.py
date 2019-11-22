@@ -30,7 +30,7 @@ SECRET_KEY = config['DJANGO']['SECRET_KEY']
 DEBUG = True
 
 NW = config['NETWORK']
-ALLOWED_HOSTS = ['nconnector.site', NW['PROD_IP']]
+ALLOWED_HOSTS = [NW['WEB'], NW['PROD_IP']]
 
 
 # Application definition
