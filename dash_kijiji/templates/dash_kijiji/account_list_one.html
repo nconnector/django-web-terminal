@@ -1,0 +1,29 @@
+{% load staticfiles %}
+<html>
+<head>
+    <title>Notifications Portal</title>
+    <script src="{% static 'dash_kijiji/js/websocketbridge.js' %}" type="text/javascript"></script>
+</head>
+
+<body>
+<style>a {text-decoration: none; color : #000;}</style>
+<pre><h3>Your Account:</h3>{% if account %}
+    <b><a href="/profile/{{ account.unm }}/">{{ account }}</a></b><br>
+        {% for case in account.case_set.all %}* <a href="/case/{{ case.id }}/">{{ case }}</a>
+            {% for ad in case.kijijiad_set.all %}* {{ ad }}
+            {% empty %}<i>none</i>
+            {% endfor %}
+        {% empty %}<i>none</i>
+        {% endfor %}
+{% else %}
+<b>Something went wrong</b>
+{% endif %}
+</pre></body>
+
+</html>
+
+
+
+
+
+

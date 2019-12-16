@@ -30,7 +30,7 @@ SECRET_KEY = config['DJANGO']['SECRET_KEY']
 DEBUG = True
 
 NW = config['NETWORK']
-ALLOWED_HOSTS = [NW['WEB'], NW['PROD_IP']]
+ALLOWED_HOSTS = [NW['WEB'], NW['PROD_IP'], NW['DEV_IP']]
 
 
 # Application definition
@@ -62,7 +62,7 @@ ROOT_URLCONF = 'djangodashboard.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -95,6 +95,8 @@ DATABASES = {
 
 
 AUTH_USER_MODEL = "users.User"
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 

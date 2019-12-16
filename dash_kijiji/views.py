@@ -6,20 +6,18 @@ from django.contrib.auth import get_user_model
 from .models import Case
 
 
-class Login(View):
-    def get(self, request, **kwargs):
-        if not request.user.is_authenticated:
-            response = HttpResponse(f'Login page')
-            return response
-        else:
-            pass  # todo: redirect to main
-
-
 class Main(View):
     """todo: redirect to own profile if not admin"""
     def get(self, request, **kwargs):
-        context = {'account_list': get_user_model().objects.all()}
-        return render(request, "dash_kijiji/account_list.html", context)
+        if not request.user.is_authenticated:
+            resp = HttpResponseRedirect('login')
+        elif request.user.is_superuser:
+            context = {'account_list': get_user_model().objects.all()}
+            resp = render(request, "dash_kijiji/account_list_all.html", context)
+        else:
+            context = {'account': get_user_model().objects.get(pk=request.user.id)}
+            resp = render(request, "dash_kijiji/account_list_one.html", context)
+        return resp
 
 
 class ViewCase(View):
