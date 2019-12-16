@@ -1,6 +1,6 @@
 config.ini
 readme_channels.txt
-server_ssh_putty.bat
+*.bat
 
 dash_kijiji/backend_scripts/
 !dash_kijiji/backend_scripts/stdout_intercept.py
