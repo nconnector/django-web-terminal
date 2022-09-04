@@ -21,7 +21,7 @@ User may own instances of each process, manage, configure and monitor them in re
 
 
 
-### TECHNOLOGY IMPLEMENTED:  
+### TECHNOLOGY USED:  
 Python 3.8  
 Django 2.2  
 Django Channels 2.3.0  
